@@ -151,7 +151,7 @@ export class Breakout extends EventEmitter<GameEvent> {
           itemsToDelete.push(index);
           return;
         }
-        if (isContains(this.paddle, nextItemPosition.x, nextItemPosition.y)) {
+        if (isContains(this.paddle, nextItemPosition.x + item.width / 2, nextItemPosition.y + item.height / 2)) {
           sound.play("item");
           if (item instanceof WidePaddle) {
             this.paddle.status = "wide";
