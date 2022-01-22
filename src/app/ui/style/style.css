@@ -55,6 +55,9 @@
   padding: 4px 8px;
   display: flex;
   align-items: center;
+  /* TODO: アイコンなどにしてはみ出ないように */
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 
 .stbo-status {

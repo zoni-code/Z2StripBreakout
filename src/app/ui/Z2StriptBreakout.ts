@@ -154,7 +154,7 @@ export class Z2StriptBreakout {
                         <span class="stbo-status-label">PADDLE</span>
                     </span>
                     <span class="stbo-status stbo-status-fast">
-                        <span class="stbo-status-label">SPEED UP</span>
+                        <span class="stbo-status-label">SPEED</span>
                     </span>
                     <span class="stbo-status stbo-status-clear">
                         <span class="stbo-status-label">クリアまで</span>
