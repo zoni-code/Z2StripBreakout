@@ -21,8 +21,10 @@ type GameEvent = {
   onClear: void;
 };
 
+type GameState = "waiting" | "playing" | "game-over" | "clear";
+
 export class Breakout extends EventEmitter<GameEvent> {
-  private state = "waiting";
+  private state: GameState = "waiting";
   private totalBlockCount: number;
 
   private balls: Ball[] = [];
@@ -48,18 +50,41 @@ export class Breakout extends EventEmitter<GameEvent> {
     this.totalBlockCount = blocks.length;
   }
 
-  public init() {
+  public toWaiting() {
     this.state = "waiting";
     this.balls = [this.getInitialBall()];
     this.items = [];
     this.paddle.x = this.stage.width / 2 - this.paddle.width / 2;
     this.paddle.y = this.stage.height - this.paddle.height;
+    this.cursorBallEffect.deactivate();
+    this.wallEffect.deactivate();
+    this.paddleEffect.deactivate();
+    this.fastBallEffect.deactivate();
     this.emitter.emit("onPlayerUpdate", this.player);
     this.emitter.emit("onScoreChange", [
       this.blocks.length,
       this.totalBlockCount,
     ]);
     this.draw();
+  }
+
+  public toPlaying() {
+    this.state = "playing";
+    sound.play("throwBall");
+    this.balls[0].velocity = this.balls[0].velocity0;
+  }
+
+  private toClear() {
+    this.toWaiting();
+    this.state = "clear";
+    sound.play("clear");
+    this.emitter.emit("onClear");
+  }
+
+  private toGameOver() {
+    this.toWaiting();
+    this.state = "game-over";
+    this.emitter.emit("onGameOver");
   }
 
   public tick(delta: number) {
@@ -189,10 +214,7 @@ export class Breakout extends EventEmitter<GameEvent> {
           const achievement =
             (1 - this.blocks.length / this.totalBlockCount) * 100;
           if (achievement > this.stage.achievement) {
-            this.init();
-            this.state = "clear";
-            sound.play("clear");
-            this.emitter.emit("onClear");
+            this.toClear();
           }
         }
       });
@@ -234,26 +256,16 @@ export class Breakout extends EventEmitter<GameEvent> {
     }
   }
 
-  public releaseBall() {
-    if (this.state !== "waiting") {
-      return;
-    }
-    this.state = "playing";
-    sound.play("throwBall");
-    this.balls[0].velocity = this.balls[0].velocity0;
-  }
-
   private onLifeDecreased() {
     this.player.life--;
-    if (this.player.life <= 0) {
-      this.init();
-      this.state = "game-over";
-      this.emitter.emit("onGameOver");
-    } else {
-      this.init();
-    }
     sound.play("lifeDecreased");
     this.emitter.emit("onPlayerUpdate", this.player);
+
+    if (this.player.life <= 0) {
+      this.toGameOver();
+    } else {
+      this.toWaiting();
+    }
   }
 
   private addRandomItem(block: Block) {
@@ -312,10 +324,14 @@ class ItemEffectDuration {
   public activate(duration: number, onDeactivate?: () => void) {
     clearTimeout(this.timer);
     this.timer = window.setTimeout(() => {
-      clearTimeout(this.timer);
-      this.timer = undefined;
+      this.deactivate();
       onDeactivate?.();
     }, duration * 1000);
+  }
+
+  public deactivate() {
+    clearTimeout(this.timer);
+    this.timer = undefined;
   }
 
   get active(): boolean {

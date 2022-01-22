@@ -154,7 +154,7 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     this.app.renderer.plugins.interaction.on(
         "pointerup",
         (event: PIXI.InteractionEvent) => {
-          this.game.releaseBall();
+          this.game.toPlaying();
         }
     );
 
@@ -171,10 +171,10 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     });
 
     keyboard.on("spacekeydown", () => {
-      this.game.releaseBall();
+      this.game.toPlaying();
     });
 
-    this.game.init();
+    this.game.toWaiting();
     this.app.ticker.add(this.onTick);
   }
 
