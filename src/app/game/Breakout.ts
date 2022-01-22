@@ -282,7 +282,7 @@ export class Breakout extends EventEmitter<GameEvent> {
 
   private addBall() {
     const ball = this.getInitialBall();
-    ball.x = this.paddle.x;
+    ball.x = this.paddle.x + this.paddle.width / 2;
     ball.y = this.paddle.y - ball.radius * 2;
     ball.velocity.x = ball.velocity0.x * 2 * (Math.random() - 0.5);
     ball.velocity.y = ball.velocity0.y;
