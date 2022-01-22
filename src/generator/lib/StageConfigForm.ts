@@ -81,7 +81,7 @@ export class StageConfigForm {
           background.files[0]
         );
         const blockDataUrl =
-          block && block.files
+          block && !block.disabled && block.files
             ? await this.loadFileAsDataUrl(block.files[0])
             : undefined;
         stageConfigs.push({

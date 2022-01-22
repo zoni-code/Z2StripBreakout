@@ -46,7 +46,6 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     await sheet.init();
 
     const blockGenerator = new BlockGenerator();
-    console.log(this.config);
 
     let blockImage = null;
     if (this.config.image.type === "foregroundasblock") {
