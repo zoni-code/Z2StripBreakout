@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Z2StripBreakout Generator</title>
+  </head>
+  <body>
+    <div class="stbo-generator-page">
+      <div class="stbo-generator-page-preview">
+        <div id="stbo-app"></div>
+        <div class="stbo-generator-page-preview-debug">
+          dキーでブロックを表示
+        </div>
+      </div>
+      <div class="stbo-generator-page-generator">
+        <form class="stbo-generator-page-form">
+          <div class="stbo-generator-page-form-title">
+            フォーマット設定
+            <span class="stbo-generator-page-form-note"
+            ><a href="#" id="format-detail">詳しい仕様</a></span>
+          </div>
+
+          <div class="stbo-generator-page-form-format">
+            <label class="stbo-generator-page-form-format-item">
+              <input type="radio" name="type" value="autoblock" checked>
+              <img src="./assets/autoblock.png" width="178" height="51">
+              <span class="stbo-generator-page-form-format-item-label">背景 + 前景 + 差分ブロック</span>
+              <!--              <span>-->
+              <!--                背景と前景の差分がブロックになり、ブロックを崩した箇所の前景が透明になります。-->
+              <!--                利用例：非透過の差分絵を二枚重ねて、差分のある部分をブロック崩し対象にしたい場合-->
+              <!--              </span>-->
+            </label>
+            <label class="stbo-generator-page-form-format-item">
+              <input type="radio" name="type" value="blockimage">
+              <img src="./assets/blockimage.png" width="178" height="51">
+              <span class="stbo-generator-page-form-format-item-label">背景 + 前景 + ブロック画像</span>
+              <!--              <span>-->
+              <!--                ブロック画像がブロックになり、ブロックを崩した箇所の前景が透明になります。-->
+              <!--                利用例：非透過の差分絵を二枚重ねて、前景の一部をブロック崩し対象にしたい場合-->
+              <!--              </span>-->
+            </label>
+            <label class="stbo-generator-page-form-format-item" aria-selected="true">
+              <input type="radio" name="type" value="foregroundasblock">
+              <img src="./assets/foregroundasblock.png" width="178" height="51">
+              <span class="stbo-generator-page-form-format-item-label">背景 + 前景</span>
+<!--              <span>-->
+<!--                前景がブロックになり、ブロックを崩した箇所が透明になります。-->
+<!--                利用例：非透過の背景の上に、透過の前景を乗せてブロック崩し対象にしたい場合-->
+<!--              </span>-->
+            </label>
+          </div>
+
+          <div class="stbo-generator-page-form-title">
+            画像設定
+            <span class="stbo-generator-page-form-note"
+              >画像は同じサイズにしてください</span
+            >
+          </div>
+          <div class="stbo-generator-page-form-stages"></div>
+          <button type="button" class="stbo-generator-page-form-stage-add">
+            + ステージを追加
+          </button>
+
+          <div class="stbo-generator-page-form-title">ゲーム設定</div>
+          <div class="stbo-generator-page-form-common">
+            <div class="stbo-generator-page-form-common-item">
+              <label class="stbo-generator-page-form-stage-label"
+                >PCのブロック分割数</label
+              >
+              <input type="number" value="32" name="pcSplit" required />
+              <span class="stbo-generator-page-form-stage-note"
+                >ブロックのサイズ = 画像サイズ / ブロック分割数になります</span
+              >
+            </div>
+            <div class="stbo-generator-page-form-common-item">
+              <label class="stbo-generator-page-form-stage-label"
+                >スマホのブロック分割数</label
+              >
+              <input type="number" value="24" name="spSplit" required />
+              <span class="stbo-generator-page-form-stage-note"
+                >スマホの場合はPCより分割数を小さくするのがオススメです</span
+              >
+            </div>
+            <div class="stbo-generator-page-form-common-item">
+              <label class="stbo-generator-page-form-stage-label"
+                >クリア条件（%）</label
+              >
+              <input
+                type="number"
+                value="70"
+                min="1"
+                max="100"
+                name="achievement"
+                required
+              />
+              <span class="stbo-generator-page-form-stage-note"
+                >崩したブロックがこの割合を超えるとクリアになります</span
+              >
+            </div>
+            <div class="stbo-generator-page-form-common-item">
+              <label class="stbo-generator-page-form-stage-label"
+                >プレーヤーのライフ</label
+              >
+              <input
+                type="number"
+                value="3"
+                min="1"
+                max="10"
+                name="life"
+                required
+              />
+            </div>
+          </div>
+          <div class="stbo-generator-page-buttons">
+            <button
+              type="button"
+              class="stbo-generator-page-button stbo-generator-page-button-secondary"
+              id="preview-button"
+            >
+              プレビュー
+            </button>
+            <button
+              type="button"
+              class="stbo-generator-page-button stbo-generator-page-button-primary"
+              id="download-button"
+            >
+              ダウンロード
+            </button>
+          </div>
+        </form>
+        <h1 class="stbo-generator-page-title">
+          Z2StripBreakout
+          <span class="stbo-generator-page-title-version"></span
+          >
+        </h1>
+      </div>
+    </div>
+    <div class="stbo-generator-page-modals" hidden>
+      <div class="stbo-generator-page-backdrop">
+      <div class="stbo-generator-page-help">
+        <dl>
+          <dt>画像の形式</dt>
+          <ul>
+            <li>png形式</li>
+            <li>すべて同じサイズにしてください</li>
+            <li>長辺が1500px〜2000pxに収まる程度を推奨</li>
+          </ul>
+          <dt>ブロック画像の形式</dt>
+          <ul>
+            <li>不透明部分をブロック領域と認識します</li>
+          </ul>
+          <dt>ヒント</dt>
+          <ul>
+            <li>スマホ対応する場合は縦長にするのを推奨します</li>
+          </ul>
+        </dl>
+      </div>
+    </div>
+    <script type="text/javascript" src="../app/app.js"></script>
+    <script type="text/javascript" src="./generator.js"></script>
+    <script type="text/javascript">
+      window.instance = StripBreakout(document.getElementById("stbo-app"), (isMobileOs) => {
+        return {
+          stages: [
+            {
+              image: {
+                type: "blockimage",
+                foreground: "./assets/f.png",
+                background: "./assets/b.png",
+                block: "./assets/block.png",
+              },
+              player: {
+                life: 5,
+              },
+              block: {
+                splitX: isMobileOs ? 24 : 32,
+                splitY: isMobileOs ? 24 : 32,
+              }
+            },
+            {
+              image: {
+                type: "autoblock",
+                foreground: "./assets/f.png",
+                background: "./assets/b.png",
+              },
+              block: {
+                splitX: isMobileOs ? 24 : 32,
+                splitY: isMobileOs ? 24 : 32,
+              },
+              player: {
+                life: 2,
+              },
+            },
+            {
+              image: {
+                type: "foregroundasblock",
+                foreground: "./assets/blockf.png",
+                background: "./assets/b.png",
+              },
+              block: {
+                splitX: isMobileOs ? 24 : 32,
+                splitY: isMobileOs ? 24 : 32,
+              },
+              clear: {
+                achievement: 5
+              }
+            },
+          ],
+        };
+      });
+    </script>
+  </body>
+</html>

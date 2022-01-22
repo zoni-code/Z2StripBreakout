@@ -1,0 +1,85 @@
+#stbo-app {
+  position: relative;
+  display: inline-block;
+  font-size: 14px;
+}
+
+#stbo-canvas {
+  display: flex;
+}
+
+#stbo-canvas canvas {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 80vh;
+}
+
+.stbo-modal {
+  position: absolute;
+  bottom: 36px;
+  left: 8px;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 3px;
+  color: #fff;
+  max-width: 80%;
+  min-width: 150px;
+}
+
+.stbo-modal-title {
+  font-weight: bold;
+  white-space: nowrap;
+  display: inline;
+}
+
+.stbo-modal-download-link {
+  margin-left: 16px;
+  color: #fff;
+  font-size: 12px;
+}
+
+.stbo-modal-button {
+  display: block;
+  width: 100%;
+  border: 1px solid #5a5a5a;
+  background-color: #fff;
+  border-radius: 3px;
+  margin: 8px auto 0 auto;
+}
+
+.stbo-status-bar {
+  background-color: #232323;
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.stbo-status {
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.stbo-status + .stbo-status {
+  margin-left: 8px;
+}
+
+.stbo-status-value {
+  margin-left: 8px;
+}
+
+.stbo-status.stbo-status-clear {
+  margin-left: auto;
+}
+
+.stbo-status-paddle,
+.stbo-status-cursor,
+.stbo-status-wall,
+.stbo-status-fast {
+  opacity: 0;
+  transition: opacity 0s linear;
+}
