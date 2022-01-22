@@ -35,6 +35,8 @@ export class Breakout extends EventEmitter<GameEvent> {
   private paddleEffect: ItemEffectDuration = new ItemEffectDuration();
   private fastBallEffect: ItemEffectDuration = new ItemEffectDuration();
 
+  private ballVelocityCoefficient = 1;
+
   private debugMode = false;
 
   constructor(
@@ -90,7 +92,7 @@ export class Breakout extends EventEmitter<GameEvent> {
   public tick(delta: number) {
     this.balls.forEach((ball, index) => {
       const isCursorBall = index === 0 && this.cursorBallEffect.active;
-      const nextBallPosition = this.fastBallEffect.active ? ball.nextPosition(delta * 1.5) : ball.nextPosition(delta);
+      const nextBallPosition = this.fastBallEffect.active ? ball.nextPosition(delta * this.ballVelocityCoefficient) : ball.nextPosition(delta);
       if (isCursorBall) {
         nextBallPosition.x = this.paddle.x + this.paddle.width / 2;
       }
@@ -162,7 +164,10 @@ export class Breakout extends EventEmitter<GameEvent> {
               this.paddle.status = "default";
             });
           } else if (item instanceof FastBall) {
-            this.fastBallEffect.activate(item.duration);
+            this.ballVelocityCoefficient = item.coefficient;
+            this.fastBallEffect.activate(item.duration, () => {
+              this.ballVelocityCoefficient = 1;
+            });
           } else if (item instanceof CursorBall) {
             this.cursorBallEffect.activate(item.duration);
           } else if (item instanceof WallItem) {

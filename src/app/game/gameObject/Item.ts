@@ -7,10 +7,12 @@ export class Item extends RectObject { }
 
 export class FastBall extends Item {
   private _duration: number;
+  private _coefficient: number;
 
   constructor(config: FastBallConfig, itemConfig: ItemConfig) {
     super();
     this._duration = config.duration;
+    this._coefficient = config.coefficient;
     this.width = itemConfig.width;
     this.height = itemConfig.height;
     this.velocity = { x: 0, y: 0 };
@@ -19,6 +21,10 @@ export class FastBall extends Item {
 
   get duration(): number {
     return this._duration;
+  }
+
+  get coefficient(): number {
+    return this._coefficient;
   }
 }
 

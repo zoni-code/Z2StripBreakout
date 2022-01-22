@@ -1,5 +1,4 @@
 import { PartialDeep } from "type-fest";
-import { FastBall } from "./gameObject/Item";
 
 export type ImageType = "foregroundasblock" | "blockimage" | "autoblock";
 
@@ -51,6 +50,7 @@ export type ShortPaddleConfig = {
 };
 
 export type FastBallConfig = {
+  coefficient: number;
   duration: number;
 };
 
@@ -129,6 +129,7 @@ export const defaultStageConfig: PartialDeep<StageConfig> = {
       duration: 8
     },
     fastBall: {
+      coefficient: 1.5,
       duration: 15
     }
   },
