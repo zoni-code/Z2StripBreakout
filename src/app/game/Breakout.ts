@@ -24,12 +24,15 @@ type GameEvent = {
 export class Breakout extends EventEmitter<GameEvent> {
   private state = "waiting";
   private totalBlockCount: number;
-  private clearCursorBallTimer: number|undefined;
-  private clearWallTimer: number|undefined;
-  private clearPaddleStatusTimer: number|undefined;
-  private fastBallTimer: number|undefined;
+
   private balls: Ball[] = [];
   private items: Item[] = [];
+
+  private cursorBallEffect: ItemEffectDuration = new ItemEffectDuration();
+  private wallEffect: ItemEffectDuration = new ItemEffectDuration();
+  private paddleEffect: ItemEffectDuration = new ItemEffectDuration();
+  private fastBallEffect: ItemEffectDuration = new ItemEffectDuration();
+
   private debugMode = false;
 
   constructor(
@@ -61,8 +64,8 @@ export class Breakout extends EventEmitter<GameEvent> {
 
   public tick(delta: number) {
     this.balls.forEach((ball, index) => {
-      const isCursorBall = index === 0 && this.clearCursorBallTimer;
-      const nextBallPosition = this.fastBallTimer ? ball.nextPosition(delta * 1.5) : ball.nextPosition(delta);
+      const isCursorBall = index === 0 && this.cursorBallEffect.active;
+      const nextBallPosition = this.fastBallEffect.active ? ball.nextPosition(delta * 1.5) : ball.nextPosition(delta);
       if (isCursorBall) {
         nextBallPosition.x = this.paddle.x + this.paddle.width / 2;
       }
@@ -76,7 +79,7 @@ export class Breakout extends EventEmitter<GameEvent> {
         ball.velocity.y = -ball.velocity.y;
       }
       // 落下
-      if (this.clearWallTimer) {
+      if (this.wallEffect.active) {
         if (nextBallPosition.y > this.stage.height) {
           sound.play("wall");
           ball.velocity.y = -ball.velocity.y;
@@ -124,42 +127,25 @@ export class Breakout extends EventEmitter<GameEvent> {
         if (isContains(this.paddle, nextItemPosition.x, nextItemPosition.y)) {
           sound.play("item");
           if (item instanceof WidePaddle) {
-            clearTimeout(this.clearPaddleStatusTimer)
             this.paddle.status = "wide";
-            this.clearPaddleStatusTimer = window.setTimeout(() => {
+            this.paddleEffect.activate(item.duration, () => {
               this.paddle.status = "default";
-              clearTimeout(this.clearPaddleStatusTimer);
-              this.clearPaddleStatusTimer = undefined;
-            }, item.duration * 1000);
+            });
           } else if(item instanceof ShortPaddle) {
-            clearTimeout(this.clearPaddleStatusTimer)
             this.paddle.status = "short";
-            this.clearPaddleStatusTimer = window.setTimeout(() => {
+            this.paddleEffect.activate(item.duration, () => {
               this.paddle.status = "default";
-              clearTimeout(this.clearPaddleStatusTimer);
-              this.clearPaddleStatusTimer = undefined;
-            }, item.duration * 1000);
+            });
           } else if (item instanceof FastBall) {
-            clearTimeout(this.fastBallTimer)
-            this.fastBallTimer = window.setTimeout(() => {
-              clearTimeout(this.fastBallTimer);
-              this.fastBallTimer = undefined;
-            }, item.duration * 1000);
+            this.fastBallEffect.activate(item.duration);
+          } else if (item instanceof CursorBall) {
+            this.cursorBallEffect.activate(item.duration);
+          } else if (item instanceof WallItem) {
+            this.wallEffect.activate(item.duration);
           } else if (item instanceof MultiBall && this.balls.length === 1) {
             for (let i = 0; i < item.numberOfBalls; i++) {
               this.addBall();
             }
-          } else if (item instanceof CursorBall) {
-            this.clearCursorBallTimer = window.setTimeout(() => {
-              clearTimeout(this.clearCursorBallTimer);
-              this.clearCursorBallTimer = undefined;
-            }, item.duration * 1000);
-          } else if (item instanceof WallItem) {
-            clearTimeout(this.clearWallTimer)
-            this.clearWallTimer = window.setTimeout(() => {
-              clearTimeout(this.clearWallTimer);
-              this.clearWallTimer = undefined;
-            }, item.duration * 1000);
           }
           this.emitter.emit("onItemGet", item);
         }
@@ -307,7 +293,7 @@ export class Breakout extends EventEmitter<GameEvent> {
       this.balls,
       this.paddle,
       this.items,
-      this.clearWallTimer != undefined
+      this.wallEffect.active
     );
   }
 
@@ -317,5 +303,22 @@ export class Breakout extends EventEmitter<GameEvent> {
 
   public dispose() {
     this.renderer.dispose();
+  }
+}
+
+class ItemEffectDuration {
+  private timer: number|undefined;
+
+  public activate(duration: number, onDeactivate?: () => void) {
+    clearTimeout(this.timer);
+    this.timer = window.setTimeout(() => {
+      clearTimeout(this.timer);
+      this.timer = undefined;
+      onDeactivate?.();
+    }, duration * 1000);
+  }
+
+  get active(): boolean {
+    return this.timer !== undefined;
   }
 }
