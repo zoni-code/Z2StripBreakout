@@ -1,46 +1,6 @@
 import { Block } from "./gameObject/Block";
 
 export class BlockGenerator {
-  constructor() {}
-
-  public async loadBlockImage(block: string) {
-    return this.loadImage(block);
-  }
-
-  public async generateBlockImageFromDiff(
-    foreground: string,
-    background: string
-  ): Promise<HTMLCanvasElement | null> {
-    const foregroundImage = await this.loadImage(foreground);
-    const backgroundImage = await this.loadImage(background);
-    const foregroundImageData = this.getImageData(foregroundImage)?.data;
-    const backgroundImageData = this.getImageData(backgroundImage)?.data;
-
-    if (!foregroundImageData || !backgroundImageData) {
-      return null;
-    }
-
-    const blockImageData = new Uint8ClampedArray(foregroundImageData.length);
-
-    for (let i = 0; i < foregroundImageData.length; i += 4) {
-      const isSame =
-        foregroundImageData[i] - backgroundImageData[i] === 0 &&
-        foregroundImageData[i + 1] - backgroundImageData[i + 1] === 0 &&
-        foregroundImageData[i + 2] - backgroundImageData[i + 2] === 0 &&
-        foregroundImageData[i + 3] - backgroundImageData[i + 3] === 0;
-      if (!isSame) {
-        blockImageData[i + 3] = 255;
-      } else {
-        blockImageData[i + 3] = 0;
-      }
-    }
-
-    return this.imageBufferToCanvas(
-      blockImageData,
-      foregroundImage.width,
-      foregroundImage.height
-    );
-  }
 
   public async generateFromBlockImage(
     blockImage: HTMLImageElement | HTMLCanvasElement,
@@ -101,48 +61,5 @@ export class BlockGenerator {
       }
     }
     return false;
-  }
-
-  private loadImage(path: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-      const foregroundImage = new Image();
-      foregroundImage.src = path;
-      foregroundImage.onload = () => {
-        resolve(foregroundImage);
-      };
-      foregroundImage.onabort = () => {
-        reject();
-      };
-    });
-  }
-
-  private getImageData(image: HTMLImageElement): ImageData | null {
-    const canvas = document.createElement("canvas");
-    canvas.width = image.width;
-    canvas.height = image.height;
-    const context = canvas.getContext("2d");
-    if (!context) {
-      return null;
-    }
-    context.drawImage(image, 0, 0);
-    return context.getImageData(0, 0, image.width, image.height);
-  }
-
-  private imageBufferToCanvas(
-    buffer: Uint8ClampedArray,
-    width: number,
-    height: number
-  ) {
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    if (!context) {
-      return null;
-    }
-    canvas.width = width;
-    canvas.height = height;
-    const imageData = context.createImageData(width, height);
-    imageData.data.set(buffer);
-    context.putImageData(imageData, 0, 0);
-    return canvas;
   }
 }

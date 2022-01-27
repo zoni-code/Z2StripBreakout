@@ -14,6 +14,7 @@ import { BallFactory } from "./gameObject/BallFactory";
 import { ItemFactory } from "./gameObject/ItemFactory";
 import { Item } from "./gameObject/Item";
 import { SoundPlayer } from "./SoundPlayer";
+import { getDiffImage, loadImage } from "./util/ImageUtil";
 
 type StripBreakoutEvent = {
   onPlayerUpdate: Player;
@@ -36,59 +37,20 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     const sheet = new StripSheet(this.app, this.config.image);
     await sheet.init();
 
-    const blockGenerator = new BlockGenerator();
-
-    let blockImage = null;
-    if (this.config.image.type === "foregroundasblock") {
-      blockImage = await blockGenerator.loadBlockImage(this.config.image.foreground)
-    }
-    if (this.config.image.type === "blockimage" && this.config.image.block) {
-      blockImage = await blockGenerator.loadBlockImage(this.config.image.block)
-    }
-    if (this.config.image.type === "autoblock") {
-      blockImage = await blockGenerator.generateBlockImageFromDiff(
-          this.config.image.foreground,
-          this.config.image.background
-      )
-    }
+    let blockImage = await this.makeBlockImage(this.config);
     if (!blockImage) {
       alert("画像が不正です")
       return;
     }
-    const blocks = await blockGenerator.generateFromBlockImage(
+
+    const blocks = await (new BlockGenerator()).generateFromBlockImage(
       blockImage,
       this.config.block.splitX,
       this.config.block.splitY
     );
 
     if (blocks.length > 0) {
-      const ballRadius = Math.min(blocks[0].width, blocks[0].height) / 3
-      const ballConfig = {
-        radius: ballRadius,
-        speed: ballRadius / 2
-      }
-      const paddleConfig = {
-        width: ballRadius * 16,
-        height: ballRadius * 1.5,
-        smashWidth: ballRadius * 2.5
-      }
-      const itemConfig = {
-        width: ballRadius * 5,
-        height: ballRadius * 5,
-        speed: ballRadius / 4
-      }
-      this.config.item = {
-        ...itemConfig,
-        ...this.config.item
-      };
-      this.config.ball = {
-        ...ballConfig,
-        ...this.config.ball
-      };
-      this.config.paddle = {
-        ...paddleConfig,
-        ...this.config.paddle
-      };
+      this.config = this.makeDefaultConfig(blocks[0].width, blocks[0].height, this.config);
     }
 
     this.game = new Breakout(
@@ -180,5 +142,52 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     }
     this.app.ticker.remove(this.onTick);
     this.game.dispose();
+  }
+
+  private makeBlockImage(config: StageConfig) {
+    if (config.image.type === "foregroundasblock") {
+      return loadImage(config.image.foreground)
+    }
+    if (config.image.type === "blockimage" && config.image.block) {
+      return loadImage(config.image.block)
+    }
+    if (config.image.type === "autoblock") {
+      return getDiffImage(
+          config.image.foreground,
+          config.image.background
+      )
+    }
+  }
+
+  private makeDefaultConfig(blockWidth: number, blockHeight: number, userConfig: StageConfig): StageConfig {
+    const defaultConfig = {...userConfig};
+    const ballRadius = Math.min(blockWidth, blockHeight) / 3
+    const ballConfig = {
+      radius: ballRadius,
+      speed: ballRadius / 2
+    }
+    const paddleConfig = {
+      width: ballRadius * 16,
+      height: ballRadius * 1.5,
+      smashWidth: ballRadius * 2.5
+    }
+    const itemConfig = {
+      width: ballRadius * 5,
+      height: ballRadius * 5,
+      speed: ballRadius / 4
+    }
+    defaultConfig.item = {
+      ...itemConfig,
+      ...defaultConfig.item
+    };
+    defaultConfig.ball = {
+      ...ballConfig,
+      ...defaultConfig.ball
+    };
+    defaultConfig.paddle = {
+      ...paddleConfig,
+      ...defaultConfig.paddle
+    };
+    return defaultConfig;
   }
 }
