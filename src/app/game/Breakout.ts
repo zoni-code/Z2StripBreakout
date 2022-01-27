@@ -108,7 +108,7 @@ export class Breakout extends EventEmitter<GameEvent> {
         nextBallPosition.x = this.paddle.x + this.paddle.width / 2;
       }
       // 壁
-      if (nextBallPosition.x < 0 || nextBallPosition.x > this.stage.width) {
+      if (nextBallPosition.x < 0 || nextBallPosition.x >= this.stage.width) {
         this.sound.play("wall");
         ball.velocity.x = -ball.velocity.x;
       }
@@ -305,7 +305,7 @@ export class Breakout extends EventEmitter<GameEvent> {
     const ball = this.getInitialBall();
     ball.x = this.paddle.x + this.paddle.width / 2;
     ball.y = this.paddle.y - ball.radius * 2;
-    ball.velocity.x = ball.velocity0.x * 2 * (Math.random() - 0.5);
+    ball.velocity.x = ball.velocity0.x * 2 * (Math.random());
     ball.velocity.y = ball.velocity0.y;
     this.balls.push(ball);
   }

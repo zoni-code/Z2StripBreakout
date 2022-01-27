@@ -1,6 +1,4 @@
 import {
-  MoveObject,
-  Point,
   RadiusObject,
   RectObject,
 } from "../gameObject/Base";
@@ -16,13 +14,14 @@ export function isBlockAndBallConflicts(
   ball: RadiusObject,
   delta: number
 ): ConflictDirection {
-  const nearBlocks =
-    Math.abs(block.x + block.width / 2 - ball.x) <=
-      Math.abs(ball.velocity.x * 3) &&
-    Math.abs(block.y + block.height / 2 - ball.y) <=
-      Math.abs(ball.velocity.y * 3);
 
-  if (!nearBlocks) {
+  const isNear =
+    Math.abs(block.x + block.width / 2 - ball.x) <=
+      Math.abs(ball.velocity.x * 10) &&
+    Math.abs(block.y + block.height / 2 - ball.y) <=
+      Math.abs(ball.velocity.y * 10);
+
+  if (!isNear) {
     return "none";
   }
 
