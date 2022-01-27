@@ -9,11 +9,11 @@ import { Breakout } from "./Breakout";
 import { Keyboard } from "./Keyboard";
 import { Player } from "./gameObject/Player";
 import { EventEmitter } from "./util/EventEmitter";
-import { sound } from "@pixi/sound";
 import { Block } from "./gameObject/Block";
 import { BallFactory } from "./gameObject/BallFactory";
 import { ItemFactory } from "./gameObject/ItemFactory";
 import { Item } from "./gameObject/Item";
+import { SoundPlayer } from "./SoundPlayer";
 
 type StripBreakoutEvent = {
   onPlayerUpdate: Player;
@@ -33,15 +33,6 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
   }
 
   public async start() {
-    sound.add("hit", require("./sound/hit.mp3"));
-    sound.add("conflict", require("./sound/conflict.mp3"));
-    sound.add("wall", require("./sound/wall.mp3"));
-    sound.add("throwBall", require("./sound/throwBall.mp3"));
-    sound.add("clear", require("./sound/clear.mp3"));
-    sound.add("smash", require("./sound/smash.mp3"));
-    sound.add("item", require("./sound/item.mp3"));
-    sound.add("lifeDecreased", require("./sound/lifeDecreased.mp3"));
-
     const sheet = new StripSheet(this.app, this.config.image);
     await sheet.init();
 
@@ -102,6 +93,7 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
 
     this.game = new Breakout(
       new Renderer(this.app),
+      new SoundPlayer(),
       new Player(this.config.player),
       new Stage(
         this.app.view.width / this.app.renderer.resolution,
@@ -188,6 +180,5 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     }
     this.app.ticker.remove(this.onTick);
     this.game.dispose();
-    sound.removeAll();
   }
 }

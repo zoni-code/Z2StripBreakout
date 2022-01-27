@@ -1,4 +1,3 @@
-import { sound } from "@pixi/sound";
 import { Renderer } from "./Renderer";
 import { Stage } from "./gameObject/Stage";
 import { Ball } from "./gameObject/Ball";
@@ -11,6 +10,7 @@ import { BallFactory } from "./gameObject/BallFactory";
 import { EventEmitter } from "./util/EventEmitter";
 import { isContains, isBlockAndBallConflicts } from "./util/HitTestUtil";
 import { map } from "./util/MathUtil";
+import { SoundPlayer } from "./SoundPlayer";
 
 type GameEvent = {
   onBlockCollision: Block;
@@ -41,6 +41,7 @@ export class Breakout extends EventEmitter<GameEvent> {
 
   constructor(
     private renderer: Renderer,
+    private sound: SoundPlayer,
     private player: Player,
     private stage: Stage,
     private blocks: Block[],
@@ -72,14 +73,14 @@ export class Breakout extends EventEmitter<GameEvent> {
 
   public toPlaying() {
     this.state = "playing";
-    sound.play("throwBall");
+    this.sound.play("throwBall");
     this.balls[0].velocity = this.balls[0].velocity0;
   }
 
   private toClear() {
     this.toWaiting();
     this.state = "clear";
-    sound.play("clear");
+    this.sound.play("clear");
     this.emitter.emit("onClear");
   }
 
@@ -98,17 +99,17 @@ export class Breakout extends EventEmitter<GameEvent> {
       }
       // 壁
       if (nextBallPosition.x < 0 || nextBallPosition.x > this.stage.width) {
-        sound.play("wall");
+        this.sound.play("wall");
         ball.velocity.x = -ball.velocity.x;
       }
       if (nextBallPosition.y < 0) {
-        sound.play("wall");
+        this.sound.play("wall");
         ball.velocity.y = -ball.velocity.y;
       }
       // 落下
       if (this.wallEffect.active) {
         if (nextBallPosition.y > this.stage.height) {
-          sound.play("wall");
+          this.sound.play("wall");
           ball.velocity.y = -ball.velocity.y;
         }
       } else {
@@ -129,10 +130,10 @@ export class Breakout extends EventEmitter<GameEvent> {
         const distance =
           nextBallPosition.x - this.paddle.x - this.paddle.width / 2;
         if (Math.abs(distance) < this.paddle.smashWidth) {
-          sound.play("smash");
+          this.sound.play("smash");
           ball.smash = true;
         } else {
-          sound.play("hit");
+          this.sound.play("hit");
         }
         ball.velocity.x = map(
           distance,
@@ -152,7 +153,7 @@ export class Breakout extends EventEmitter<GameEvent> {
           return;
         }
         if (isContains(this.paddle, nextItemPosition.x + item.width / 2, nextItemPosition.y + item.height / 2)) {
-          sound.play("item");
+          this.sound.play("item");
           if (item instanceof WidePaddle) {
             this.paddle.status = "wide";
             this.paddleEffect.activate(item.duration, () => {
@@ -205,7 +206,7 @@ export class Breakout extends EventEmitter<GameEvent> {
             }
           }
 
-          sound.play("conflict");
+          this.sound.play("conflict");
           const blockIndex = this.blocks.indexOf(block);
           if (blockIndex) {
             this.blocks.splice(blockIndex, 1);
@@ -263,7 +264,7 @@ export class Breakout extends EventEmitter<GameEvent> {
 
   private onLifeDecreased() {
     this.player.life--;
-    sound.play("lifeDecreased");
+    this.sound.play("lifeDecreased");
     this.emitter.emit("onPlayerUpdate", this.player);
 
     if (this.player.life <= 0) {
