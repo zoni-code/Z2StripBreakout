@@ -28,7 +28,7 @@ export class Paddle extends RectObject {
     if (this._status === "wide") {
       return this._width * 1.5;
     } else if (this._status === "short") {
-      return this._width * 0.5
+      return this._width * 0.5;
     }
     return this._width;
   }

@@ -3,7 +3,7 @@ export type GameConfig = {
   spSplit: number;
   life: number;
   achievement: number;
-}
+};
 
 export class GameConfigForm {
   public getGameConfig(): GameConfig {
@@ -11,8 +11,8 @@ export class GameConfigForm {
       pcSplit: this.getPcBlockConfig(),
       spSplit: this.getSpBlockConfig(),
       achievement: this.getAchievementConfig(),
-      life: this.getPlayerLifeConfig()
-    }
+      life: this.getPlayerLifeConfig(),
+    };
   }
 
   private getPcBlockConfig() {

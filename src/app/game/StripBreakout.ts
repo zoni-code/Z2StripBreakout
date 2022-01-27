@@ -25,7 +25,6 @@ type StripBreakoutEvent = {
 };
 
 export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
-
   private game: Breakout;
 
   constructor(private app: PIXI.Application, private config: StageConfig) {
@@ -39,18 +38,22 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
 
     let blockImage = await this.makeBlockImage(this.config);
     if (!blockImage) {
-      alert("画像が不正です")
+      alert("画像が不正です");
       return;
     }
 
-    const blocks = await (new BlockGenerator()).generateFromBlockImage(
+    const blocks = await new BlockGenerator().generateFromBlockImage(
       blockImage,
       this.config.block.splitX,
       this.config.block.splitY
     );
 
     if (blocks.length > 0) {
-      this.config = this.makeDefaultConfig(blocks[0].width, blocks[0].height, this.config);
+      this.config = this.makeDefaultConfig(
+        blocks[0].width,
+        blocks[0].height,
+        this.config
+      );
     }
 
     this.game = new Breakout(
@@ -99,17 +102,17 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
     keyboard.init();
 
     this.app.renderer.plugins.interaction.on(
-        "pointermove",
-        (event: PIXI.InteractionEvent) => {
-          this.game.movePaddle(event.data.global.x);
-          this.game.moveBall(event.data.global.x);
-        }
+      "pointermove",
+      (event: PIXI.InteractionEvent) => {
+        this.game.movePaddle(event.data.global.x);
+        this.game.moveBall(event.data.global.x);
+      }
     );
     this.app.renderer.plugins.interaction.on(
-        "pointerup",
-        (event: PIXI.InteractionEvent) => {
-          this.game.toPlaying();
-        }
+      "pointerup",
+      (event: PIXI.InteractionEvent) => {
+        this.game.toPlaying();
+      }
     );
 
     keyboard.on("leftkeydown", () => {
@@ -134,7 +137,7 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
 
   onTick = (delta: number) => {
     this.game?.tick(delta);
-  }
+  };
 
   public dispose() {
     for (let i = this.app.stage.children.length - 1; i >= 0; i--) {
@@ -146,47 +149,48 @@ export class StripBreakout extends EventEmitter<StripBreakoutEvent> {
 
   private makeBlockImage(config: StageConfig) {
     if (config.image.type === "foregroundasblock") {
-      return loadImage(config.image.foreground)
+      return loadImage(config.image.foreground);
     }
     if (config.image.type === "blockimage" && config.image.block) {
-      return loadImage(config.image.block)
+      return loadImage(config.image.block);
     }
     if (config.image.type === "autoblock") {
-      return getDiffImage(
-          config.image.foreground,
-          config.image.background
-      )
+      return getDiffImage(config.image.foreground, config.image.background);
     }
   }
 
-  private makeDefaultConfig(blockWidth: number, blockHeight: number, userConfig: StageConfig): StageConfig {
-    const defaultConfig = {...userConfig};
-    const ballRadius = Math.min(blockWidth, blockHeight) / 3
+  private makeDefaultConfig(
+    blockWidth: number,
+    blockHeight: number,
+    userConfig: StageConfig
+  ): StageConfig {
+    const defaultConfig = { ...userConfig };
+    const ballRadius = Math.min(blockWidth, blockHeight) / 3;
     const ballConfig = {
       radius: ballRadius,
-      speed: ballRadius / 2
-    }
+      speed: ballRadius / 2,
+    };
     const paddleConfig = {
       width: ballRadius * 16,
       height: ballRadius * 1.5,
-      smashWidth: ballRadius * 2.5
-    }
+      smashWidth: ballRadius * 2.5,
+    };
     const itemConfig = {
       width: ballRadius * 5,
       height: ballRadius * 5,
-      speed: ballRadius / 4
-    }
+      speed: ballRadius / 4,
+    };
     defaultConfig.item = {
       ...itemConfig,
-      ...defaultConfig.item
+      ...defaultConfig.item,
     };
     defaultConfig.ball = {
       ...ballConfig,
-      ...defaultConfig.ball
+      ...defaultConfig.ball,
     };
     defaultConfig.paddle = {
       ...paddleConfig,
-      ...defaultConfig.paddle
+      ...defaultConfig.paddle,
     };
     return defaultConfig;
   }

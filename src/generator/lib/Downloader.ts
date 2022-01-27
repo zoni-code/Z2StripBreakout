@@ -23,20 +23,17 @@ export class Downloader {
     link.remove();
   }
 
-  private createTemplate(
-    imageConfig: ImageConfig[],
-    gameConfig: GameConfig
-  ) {
+  private createTemplate(imageConfig: ImageConfig[], gameConfig: GameConfig) {
     const stageConfigString = imageConfig.map((config) => {
       return `
                 {
                     image: ${JSON.stringify(config)},
                     block: {
                         splitX: isMobileOs ? ${gameConfig.spSplit} : ${
-          gameConfig.pcSplit
+        gameConfig.pcSplit
       },
                         splitY: isMobileOs ? ${gameConfig.spSplit} : ${
-          gameConfig.pcSplit
+        gameConfig.pcSplit
       }
                     },
                     clear: {

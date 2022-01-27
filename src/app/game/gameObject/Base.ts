@@ -8,7 +8,7 @@ export type Vector = {
   y: number;
 };
 
-class MoveObject {
+export class MoveObject {
   private _position: Point = { x: 0, y: 0 };
   private _velocity: Vector = { x: 0, y: 0 };
   private _velocity0: Vector = { x: 0, y: 0 };
@@ -54,7 +54,10 @@ class MoveObject {
   }
 
   public nextPosition(delta: number) {
-    return { x: this.x + this.velocity.x * delta, y: this.y + this.velocity.y * delta };
+    return {
+      x: this.x + this.velocity.x * delta,
+      y: this.y + this.velocity.y * delta,
+    };
   }
 }
 

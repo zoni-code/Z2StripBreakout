@@ -2,7 +2,15 @@ import * as PIXI from "pixi.js";
 import { Block } from "./gameObject/Block";
 import { Ball } from "./gameObject/Ball";
 import { Paddle } from "./gameObject/Paddle";
-import { CursorBall, FastBall, Item, MultiBall, ShortPaddle, WallItem, WidePaddle } from "./gameObject/Item";
+import {
+  CursorBall,
+  FastBall,
+  Item,
+  MultiBall,
+  ShortPaddle,
+  WallItem,
+  WidePaddle,
+} from "./gameObject/Item";
 import { Stage } from "./gameObject/Stage";
 import { SpritePool } from "./util/SpritePool";
 
@@ -21,12 +29,36 @@ export class Renderer {
   constructor(app: PIXI.Application) {
     this.graphics = new PIXI.Graphics();
     this.sprites = new PIXI.Container();
-    this.multiBallSpritePool = new SpritePool(SPRITE_POOL_SIZE, app, require("./image/item_multi.png"));
-    this.cursorBallSpritePool = new SpritePool(SPRITE_POOL_SIZE, app, require("./image/item_cursor.png"));
-    this.wallItemSpritePool = new SpritePool(SPRITE_POOL_SIZE, app, require("./image/item_wall.png"));
-    this.wideItemSpritePool = new SpritePool(SPRITE_POOL_SIZE, app, require("./image/item_wide.png"));
-    this.shortItemSpritePool = new SpritePool(SPRITE_POOL_SIZE, app, require("./image/item_short.png"));
-    this.fastBallSpritePool = new SpritePool(SPRITE_POOL_SIZE, app, require("./image/item_fast.png"));
+    this.multiBallSpritePool = new SpritePool(
+      SPRITE_POOL_SIZE,
+      app,
+      require("./image/item_multi.png")
+    );
+    this.cursorBallSpritePool = new SpritePool(
+      SPRITE_POOL_SIZE,
+      app,
+      require("./image/item_cursor.png")
+    );
+    this.wallItemSpritePool = new SpritePool(
+      SPRITE_POOL_SIZE,
+      app,
+      require("./image/item_wall.png")
+    );
+    this.wideItemSpritePool = new SpritePool(
+      SPRITE_POOL_SIZE,
+      app,
+      require("./image/item_wide.png")
+    );
+    this.shortItemSpritePool = new SpritePool(
+      SPRITE_POOL_SIZE,
+      app,
+      require("./image/item_short.png")
+    );
+    this.fastBallSpritePool = new SpritePool(
+      SPRITE_POOL_SIZE,
+      app,
+      require("./image/item_fast.png")
+    );
     app.stage.addChild(this.graphics);
     app.stage.addChild(this.sprites);
   }
@@ -52,7 +84,12 @@ export class Renderer {
 
     if (usingWall) {
       this.graphics.beginFill(0x00ccff, 0.5);
-      this.graphics.drawRect(0, stage.height - paddle.height, stage.width, paddle.height);
+      this.graphics.drawRect(
+        0,
+        stage.height - paddle.height,
+        stage.width,
+        paddle.height
+      );
       this.graphics.endFill();
     }
 

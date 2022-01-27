@@ -56,7 +56,7 @@ export type FastBallConfig = {
 
 export type ItemConfig = {
   rate: number;
-  rateConfig: ItemRateConfig,
+  rateConfig: ItemRateConfig;
   width: number;
   height: number;
   speed: number;
@@ -69,13 +69,14 @@ export type ItemConfig = {
 };
 
 export type ItemRateConfig = Record<
-    "multiBall" |
-    "cursorBall" |
-    "wallItem" |
-    "widePaddle" |
-    "shortPaddle" |
-    "fastBall"
-    , number>
+  | "multiBall"
+  | "cursorBall"
+  | "wallItem"
+  | "widePaddle"
+  | "shortPaddle"
+  | "fastBall",
+  number
+>;
 
 export type StageConfig = {
   image: ImageConfig;
@@ -111,27 +112,27 @@ export const defaultStageConfig: PartialDeep<StageConfig> = {
       wallItem: 10,
       widePaddle: 10,
       shortPaddle: 30,
-      fastBall: 10
+      fastBall: 10,
     },
     multiBall: {
-      balls: 2
+      balls: 2,
     },
     cursorBall: {
-      duration: 5
+      duration: 5,
     },
     wallItem: {
-      duration: 15
+      duration: 15,
     },
     widePaddle: {
-      duration: 15
+      duration: 15,
     },
     shortPaddle: {
-      duration: 8
+      duration: 8,
     },
     fastBall: {
       coefficient: 1.5,
-      duration: 15
-    }
+      duration: 15,
+    },
   },
   clear: {
     achievement: 70,

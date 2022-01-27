@@ -1,9 +1,15 @@
 import {
-  CursorBallConfig, FastBallConfig, ItemConfig, MultiBallConfig, ShortPaddleConfig, WallItemConfig, WidePaddleConfig
+  CursorBallConfig,
+  FastBallConfig,
+  ItemConfig,
+  MultiBallConfig,
+  ShortPaddleConfig,
+  WallItemConfig,
+  WidePaddleConfig,
 } from "../Config";
 import { RectObject } from "./Base";
 
-export class Item extends RectObject { }
+export class Item extends RectObject {}
 
 export class FastBall extends Item {
   private _duration: number;

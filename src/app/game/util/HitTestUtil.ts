@@ -1,4 +1,9 @@
-import { RadiusObject, RectObject } from "../gameObject/Base";
+import {
+  MoveObject,
+  Point,
+  RadiusObject,
+  RectObject,
+} from "../gameObject/Base";
 
 export function isContains(rect: RectObject, px: number, py: number) {
   return rect.top < py && py < rect.bottom && rect.left < px && px < rect.right;
@@ -7,69 +12,71 @@ export function isContains(rect: RectObject, px: number, py: number) {
 export type ConflictDirection = "top" | "right" | "bottom" | "left" | "none";
 
 export function isBlockAndBallConflicts(
-  rect: RectObject,
-  radius: RadiusObject
+  block: RectObject,
+  ball: RadiusObject,
+  delta: number
 ): ConflictDirection {
-  const nextBallX = radius.x + radius.velocity.x;
-  const nextBallY = radius.y + radius.velocity.y;
+  const nearBlocks =
+    Math.abs(block.x + block.width / 2 - ball.x) <=
+      Math.abs(ball.velocity.x * 3) &&
+    Math.abs(block.y + block.height / 2 - ball.y) <=
+      Math.abs(ball.velocity.y * 3);
 
-  if (
-    Math.abs(rect.x - nextBallX) > radius.radius * 5 &&
-    Math.abs(rect.y - nextBallY) > radius.radius * 5
-  ) {
-    // 足切り
+  if (!nearBlocks) {
     return "none";
   }
 
+  const nextBallPosition = ball.nextPosition(delta);
+
   if (
     isIntersected(
-      radius.x,
-      radius.y,
-      nextBallX,
-      nextBallY,
-      rect.left,
-      rect.top,
-      rect.left,
-      rect.bottom
+      ball.x,
+      ball.y,
+      nextBallPosition.x,
+      nextBallPosition.y,
+      block.left,
+      block.top,
+      block.left,
+      block.bottom
     )
   ) {
     return "left";
   } else if (
     isIntersected(
-      radius.x,
-      radius.y,
-      nextBallX,
-      nextBallY,
-      rect.left,
-      rect.top,
-      rect.right,
-      rect.top
+      ball.x,
+      ball.y,
+      nextBallPosition.x,
+      nextBallPosition.y,
+      block.left,
+      block.top,
+      block.right,
+      block.top
     )
   ) {
     return "top";
   } else if (
     isIntersected(
-      radius.x,
-      radius.y,
-      nextBallX,
-      nextBallY,
-      rect.right,
-      rect.top,
-      rect.right,
-      rect.bottom
+      ball.x,
+      ball.y,
+      nextBallPosition.x,
+      nextBallPosition.y,
+      block.right,
+      block.top,
+      block.right,
+      block.bottom
     )
   ) {
     return "right";
   } else if (
     isIntersected(
-      radius.x,
-      radius.y,
-      nextBallX,
-      nextBallY,
-      rect.left,
-      rect.bottom,
-      rect.right,
-      rect.bottom
+      ball.x,
+      ball.y,
+      nextBallPosition.x,
+      nextBallPosition.y,
+      block.left,
+      block.bottom,
+      block.right,
+      block.bottom
     )
   ) {
     return "bottom";

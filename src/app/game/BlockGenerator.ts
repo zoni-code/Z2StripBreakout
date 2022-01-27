@@ -1,7 +1,6 @@
 import { Block } from "./gameObject/Block";
 
 export class BlockGenerator {
-
   public async generateFromBlockImage(
     blockImage: HTMLImageElement | HTMLCanvasElement,
     splitX: number,

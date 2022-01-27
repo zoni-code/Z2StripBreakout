@@ -1,10 +1,10 @@
 import { ImageConfig, ImageType } from "../../app/game/Config";
 
 export class StageConfigForm {
-
   public init() {
-    const typeInputs = document.querySelectorAll<HTMLInputElement>("input[name=type]");
-    typeInputs.forEach(input => {
+    const typeInputs =
+      document.querySelectorAll<HTMLInputElement>("input[name=type]");
+    typeInputs.forEach((input) => {
       input.addEventListener("change", () => {
         this.syncStageForm();
       });
@@ -13,10 +13,14 @@ export class StageConfigForm {
   }
 
   private syncStageForm() {
-    const checkedTypeInput = document.querySelector<HTMLInputElement>("input[name=type]:checked")!;
+    const checkedTypeInput = document.querySelector<HTMLInputElement>(
+      "input[name=type]:checked"
+    )!;
     const hideBlockImageInput = checkedTypeInput.value !== "blockimage";
-    const blockImageForm = document.querySelectorAll<HTMLElement>(".stbo-generator-page-form-stage-block");
-    blockImageForm.forEach(form => {
+    const blockImageForm = document.querySelectorAll<HTMLElement>(
+      ".stbo-generator-page-form-stage-block"
+    );
+    blockImageForm.forEach((form) => {
       form.hidden = hideBlockImageInput;
       form.querySelector("input")!.disabled = hideBlockImageInput;
     });
@@ -65,7 +69,9 @@ export class StageConfigForm {
       const block = stage.querySelector<HTMLInputElement>(
         'input[name="block"]'
       );
-      const checkedTypeInput = document.querySelector<HTMLInputElement>("input[name=type]:checked")!;
+      const checkedTypeInput = document.querySelector<HTMLInputElement>(
+        "input[name=type]:checked"
+      )!;
       if (
         foreground &&
         foreground.files &&

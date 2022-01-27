@@ -7,7 +7,7 @@ import "./ui/style/style.css";
 export default function init(
   container: HTMLElement,
   userConfigFun: (isMobileOS: boolean) => Config
-): Z2StriptBreakout|null {
+): Z2StriptBreakout | null {
   const config = new ConfigBuilder().build(userConfigFun(isMobileOS()));
   if (!config) {
     return null;

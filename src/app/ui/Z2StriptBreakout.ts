@@ -3,7 +3,14 @@ import { Config } from "../game/Config";
 import { StripBreakout } from "../game/StripBreakout";
 import { Modal } from "./Modal";
 import { Player } from "../game/gameObject/Player";
-import { CursorBall, FastBall, Item, ShortPaddle, WallItem, WidePaddle } from "../game/gameObject/Item";
+import {
+  CursorBall,
+  FastBall,
+  Item,
+  ShortPaddle,
+  WallItem,
+  WidePaddle,
+} from "../game/gameObject/Item";
 
 export class Z2StriptBreakout {
   private app: PIXI.Application;
@@ -46,37 +53,40 @@ export class Z2StriptBreakout {
         this.clearValue.textContent = `${currentBlocks} / ${totalBlocks}`;
       }
     );
-    this.game.on(
-        "onItemGet",
-        (item: Item) => {
-          // 正確なゲージが表示できないので透明度でお茶を濁す
-          if (item instanceof WallItem) {
-            const status = document.querySelector<HTMLElement>(".stbo-status-wall");
-            this.doOpacityAnimation(status, item.duration);
-            return;
-          }
-          if (item instanceof CursorBall) {
-            const status = document.querySelector<HTMLElement>(".stbo-status-cursor");
-            this.doOpacityAnimation(status, item.duration);
-            return;
-          }
-          if (item instanceof WidePaddle) {
-            const status = document.querySelector<HTMLElement>(".stbo-status-paddle");
-            this.doOpacityAnimation(status, item.duration);
-            return;
-          }
-          if (item instanceof ShortPaddle) {
-            const status = document.querySelector<HTMLElement>(".stbo-status-paddle");
-            this.doOpacityAnimation(status, item.duration);
-            return;
-          }
-          if (item instanceof FastBall) {
-            const status = document.querySelector<HTMLElement>(".stbo-status-fast");
-            this.doOpacityAnimation(status, item.duration);
-            return;
-          }
-        }
-    );
+    this.game.on("onItemGet", (item: Item) => {
+      // 正確なゲージが表示できないので透明度でお茶を濁す
+      if (item instanceof WallItem) {
+        const status = document.querySelector<HTMLElement>(".stbo-status-wall");
+        this.doOpacityAnimation(status, item.duration);
+        return;
+      }
+      if (item instanceof CursorBall) {
+        const status = document.querySelector<HTMLElement>(
+          ".stbo-status-cursor"
+        );
+        this.doOpacityAnimation(status, item.duration);
+        return;
+      }
+      if (item instanceof WidePaddle) {
+        const status = document.querySelector<HTMLElement>(
+          ".stbo-status-paddle"
+        );
+        this.doOpacityAnimation(status, item.duration);
+        return;
+      }
+      if (item instanceof ShortPaddle) {
+        const status = document.querySelector<HTMLElement>(
+          ".stbo-status-paddle"
+        );
+        this.doOpacityAnimation(status, item.duration);
+        return;
+      }
+      if (item instanceof FastBall) {
+        const status = document.querySelector<HTMLElement>(".stbo-status-fast");
+        this.doOpacityAnimation(status, item.duration);
+        return;
+      }
+    });
     this.game.on("onClear", () => {
       this.resetAllStatus();
       if (this.config.stages[index + 1]) {
@@ -117,7 +127,7 @@ export class Z2StriptBreakout {
     this.game.start();
   }
 
-  private doOpacityAnimation(status: HTMLElement|null, duration: number) {
+  private doOpacityAnimation(status: HTMLElement | null, duration: number) {
     if (!status) {
       return;
     }
@@ -130,7 +140,7 @@ export class Z2StriptBreakout {
   }
 
   private resetAllStatus() {
-    document.querySelectorAll<HTMLElement>(".stbo-status").forEach(status => {
+    document.querySelectorAll<HTMLElement>(".stbo-status").forEach((status) => {
       status.style.opacity = "";
       status.style.transitionDuration = "";
     });

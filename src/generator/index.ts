@@ -7,7 +7,9 @@ import { GameConfig, GameConfigForm } from "./lib/GameConfigForm";
 declare const VERSION: string;
 
 window.addEventListener("DOMContentLoaded", () => {
-  const versionLabel = document.querySelector(".stbo-generator-page-title-version");
+  const versionLabel = document.querySelector(
+    ".stbo-generator-page-title-version"
+  );
   if (versionLabel) {
     versionLabel.textContent = "version " + VERSION;
   }
@@ -46,7 +48,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const formatDetailLink = document.getElementById("format-detail");
   formatDetailLink?.addEventListener("click", () => {
-    const modal = document.querySelector<HTMLElement>(".stbo-generator-page-modals");
+    const modal = document.querySelector<HTMLElement>(
+      ".stbo-generator-page-modals"
+    );
     if (modal) {
       modal.hidden = false;
     }
@@ -57,7 +61,9 @@ window.addEventListener("DOMContentLoaded", () => {
     if (event.target !== modalBackdrop) {
       return;
     }
-    const modal = document.querySelector<HTMLElement>(".stbo-generator-page-modals");
+    const modal = document.querySelector<HTMLElement>(
+      ".stbo-generator-page-modals"
+    );
     if (modal) {
       modal.hidden = true;
     }
@@ -72,34 +78,31 @@ window.addEventListener("DOMContentLoaded", () => {
       ?.checkValidity();
   }
 
-  function updatePreview(
-    imageConfig: ImageConfig[],
-    gameConfig: GameConfig
-  ) {
-    const global = (window as any);
+  function updatePreview(imageConfig: ImageConfig[], gameConfig: GameConfig) {
+    const global = window as any;
     global.instance?.destroy();
     global.instance = global.StripBreakout(
-        document.getElementById("stbo-app"),
-        (isMobileOs: boolean) => {
-          const stageConfig = imageConfig.map((config) => {
-            return {
-              image: config,
-              block: {
-                splitX: isMobileOs ? gameConfig.spSplit : gameConfig.pcSplit,
-                splitY: isMobileOs ? gameConfig.spSplit : gameConfig.pcSplit,
-              },
-              clear: {
-                achievement: gameConfig.achievement,
-              },
-              player: {
-                life: gameConfig.life,
-              },
-            };
-          });
+      document.getElementById("stbo-app"),
+      (isMobileOs: boolean) => {
+        const stageConfig = imageConfig.map((config) => {
           return {
-            stages: stageConfig,
+            image: config,
+            block: {
+              splitX: isMobileOs ? gameConfig.spSplit : gameConfig.pcSplit,
+              splitY: isMobileOs ? gameConfig.spSplit : gameConfig.pcSplit,
+            },
+            clear: {
+              achievement: gameConfig.achievement,
+            },
+            player: {
+              life: gameConfig.life,
+            },
           };
-        }
+        });
+        return {
+          stages: stageConfig,
+        };
+      }
     );
   }
 });

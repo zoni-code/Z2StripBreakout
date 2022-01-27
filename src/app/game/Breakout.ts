@@ -4,7 +4,15 @@ import { Ball } from "./gameObject/Ball";
 import { Paddle } from "./gameObject/Paddle";
 import { Block } from "./gameObject/Block";
 import { Player } from "./gameObject/Player";
-import { CursorBall, FastBall, Item, MultiBall, ShortPaddle, WallItem, WidePaddle } from "./gameObject/Item";
+import {
+  CursorBall,
+  FastBall,
+  Item,
+  MultiBall,
+  ShortPaddle,
+  WallItem,
+  WidePaddle,
+} from "./gameObject/Item";
 import { ItemFactory } from "./gameObject/ItemFactory";
 import { BallFactory } from "./gameObject/BallFactory";
 import { EventEmitter } from "./util/EventEmitter";
@@ -93,7 +101,9 @@ export class Breakout extends EventEmitter<GameEvent> {
   public tick(delta: number) {
     this.balls.forEach((ball, index) => {
       const isCursorBall = index === 0 && this.cursorBallEffect.active;
-      const nextBallPosition = this.fastBallEffect.active ? ball.nextPosition(delta * this.ballVelocityCoefficient) : ball.nextPosition(delta);
+      const nextBallPosition = this.fastBallEffect.active
+        ? ball.nextPosition(delta * this.ballVelocityCoefficient)
+        : ball.nextPosition(delta);
       if (isCursorBall) {
         nextBallPosition.x = this.paddle.x + this.paddle.width / 2;
       }
@@ -152,14 +162,20 @@ export class Breakout extends EventEmitter<GameEvent> {
           itemsToDelete.push(index);
           return;
         }
-        if (isContains(this.paddle, nextItemPosition.x + item.width / 2, nextItemPosition.y + item.height / 2)) {
+        if (
+          isContains(
+            this.paddle,
+            nextItemPosition.x + item.width / 2,
+            nextItemPosition.y + item.height / 2
+          )
+        ) {
           this.sound.play("item");
           if (item instanceof WidePaddle) {
             this.paddle.status = "wide";
             this.paddleEffect.activate(item.duration, () => {
               this.paddle.status = "default";
             });
-          } else if(item instanceof ShortPaddle) {
+          } else if (item instanceof ShortPaddle) {
             this.paddle.status = "short";
             this.paddleEffect.activate(item.duration, () => {
               this.paddle.status = "default";
@@ -182,13 +198,13 @@ export class Breakout extends EventEmitter<GameEvent> {
         }
         item.position = nextItemPosition;
       });
-      for (let i = itemsToDelete.length -1; i >= 0; i--) {
+      for (let i = itemsToDelete.length - 1; i >= 0; i--) {
         this.items.splice(itemsToDelete[i], 1);
       }
 
       // ブロック
       this.blocks.forEach((block) => {
-        const conflictDirection = isBlockAndBallConflicts(block, ball);
+        const conflictDirection = isBlockAndBallConflicts(block, ball, delta);
         if (conflictDirection !== "none") {
           if (!ball.smash) {
             switch (conflictDirection) {
@@ -326,7 +342,7 @@ export class Breakout extends EventEmitter<GameEvent> {
 }
 
 class ItemEffectDuration {
-  private timer: number|undefined;
+  private timer: number | undefined;
 
   public activate(duration: number, onDeactivate?: () => void) {
     clearTimeout(this.timer);
