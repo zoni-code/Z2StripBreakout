@@ -182,8 +182,9 @@ export class Breakout extends EventEmitter<GameEvent> {
         }
         item.position = nextItemPosition;
       });
-      for (var i = itemsToDelete.length -1; i >= 0; i--)
-        this.items.splice(itemsToDelete[i],1);
+      for (let i = itemsToDelete.length -1; i >= 0; i--) {
+        this.items.splice(itemsToDelete[i], 1);
+      }
 
       // ブロック
       this.blocks.forEach((block) => {

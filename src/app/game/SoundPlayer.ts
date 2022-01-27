@@ -1,22 +1,22 @@
 import { sound } from "@pixi/sound";
 
+let init = false;
+
 export class SoundPlayer {
 
     constructor() {
-        this.add("hit", "./sound/hit.mp3");
-        this.add("conflict", "./sound/conflict.mp3");
-        this.add("wall", "./sound/wall.mp3");
-        this.add("throwBall", "./sound/throwBall.mp3");
-        this.add("clear", "./sound/clear.mp3");
-        this.add("smash", "./sound/smash.mp3");
-        this.add("item", "./sound/item.mp3");
-        this.add("lifeDecreased", "./sound/lifeDecreased.mp3");
-    }
-
-    private add(id: string, path: string) {
-        if (!sound.exists(id)) {
-            sound.add(id, require(path));
+        if (init) {
+            return;
         }
+        sound.add("hit", require("./sound/hit.mp3"));
+        sound.add("conflict", require("./sound/conflict.mp3"));
+        sound.add("wall", require("./sound/wall.mp3"));
+        sound.add("throwBall", require("./sound/throwBall.mp3"));
+        sound.add("clear", require("./sound/clear.mp3"));
+        sound.add("smash", require("./sound/smash.mp3"));
+        sound.add("item", require("./sound/item.mp3"));
+        sound.add("lifeDecreased", require("./sound/lifeDecreased.mp3"));
+        init = true;
     }
 
     public play(id: string) {
