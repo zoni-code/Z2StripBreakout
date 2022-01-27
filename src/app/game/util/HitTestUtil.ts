@@ -16,10 +16,8 @@ export function isBlockAndBallConflicts(
 ): ConflictDirection {
 
   const isNear =
-    Math.abs(block.x + block.width / 2 - ball.x) <=
-      Math.abs(ball.velocity.x * 10) &&
-    Math.abs(block.y + block.height / 2 - ball.y) <=
-      Math.abs(ball.velocity.y * 10);
+    Math.abs(block.x + block.width / 2 - ball.x) <= 100 &&
+    Math.abs(block.y + block.height / 2 - ball.y) <= 100;
 
   if (!isNear) {
     return "none";
