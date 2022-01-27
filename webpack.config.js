@@ -1,5 +1,6 @@
-const CopyPlugin = require("copy-webpack-plugin");
 const webpack = require("webpack");
+const CopyPlugin = require("copy-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 const app = {
   mode: "development",
@@ -45,7 +46,12 @@ const app = {
     extensions: [
       ".ts", ".js",
     ],
-  }
+  },
+  optimization: {
+    minimizer: [new TerserPlugin({
+      extractComments: false,
+    })],
+  },
 };
 
 const generator = {
