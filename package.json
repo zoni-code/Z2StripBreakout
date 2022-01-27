@@ -8,7 +8,7 @@
     "start": "npm run watch",
     "build": "webpack --mode=production",
     "watch": "webpack -w",
-    "serve": "npx http-server ./dist -o",
+    "serve": "npx http-server ./dist -c-1 -o",
     "test": "echo \"Error: no test specified\" && exit 1",
     "fix": "npm run fix:eslint; npm run fix:prettier",
     "fix:eslint": "eslint --fix",

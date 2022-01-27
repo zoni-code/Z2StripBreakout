@@ -80,6 +80,9 @@ export class Breakout extends EventEmitter<GameEvent> {
   }
 
   public toPlaying() {
+    if (this.state === "playing") {
+      return;
+    }
     this.state = "playing";
     this.sound.play("throwBall");
     this.balls[0].velocity = this.balls[0].velocity0;
